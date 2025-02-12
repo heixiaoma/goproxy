@@ -18,8 +18,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/elazarl/goproxy"
-	"github.com/elazarl/goproxy/ext/image"
+	"github.com/heixiaoma/goproxy"
+	"github.com/heixiaoma/goproxy/ext/image"
 )
 
 var acceptAllCerts = &tls.Config{InsecureSkipVerify: true}
@@ -666,13 +666,13 @@ func TestGoproxyHijackConnect(t *testing.T) {
 	proxy := goproxy.NewProxyHttpServer()
 	proxy.OnRequest(goproxy.ReqHostIs(srv.Listener.Addr().String())).
 		HijackConnect(func(req *http.Request, client net.Conn, ctx *goproxy.ProxyCtx) {
-		t.Logf("URL %+#v\nSTR %s", req.URL, req.URL.String())
-		resp, err := http.Get("http:" + req.URL.String() + "/bobo")
-		panicOnErr(err, "http.Get(CONNECT url)")
-		panicOnErr(resp.Write(client), "resp.Write(client)")
-		resp.Body.Close()
-		client.Close()
-	})
+			t.Logf("URL %+#v\nSTR %s", req.URL, req.URL.String())
+			resp, err := http.Get("http:" + req.URL.String() + "/bobo")
+			panicOnErr(err, "http.Get(CONNECT url)")
+			panicOnErr(resp.Write(client), "resp.Write(client)")
+			resp.Body.Close()
+			client.Close()
+		})
 	client, l := oneShotProxy(proxy, t)
 	defer l.Close()
 	proxyAddr := l.Listener.Addr().String()
